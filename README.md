@@ -1,1 +1,1 @@
-# pulumi-eks-deployment
+# Pulumi EKS deployment
