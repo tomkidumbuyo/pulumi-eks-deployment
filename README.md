@@ -1,5 +1,7 @@
 # Pulumi EKS deployment
-to run the stack you can do 
+This repo is a just for me to learn how to use pulumu as a infrastructure as code, DevOps tool. Pulumi allows you to use multiple programming languages, for this repo we will be using Typescript.
+
+To run the stack you can do 
 ```sh
 pulumi up
 ```
@@ -7,7 +9,6 @@ pulumi up
 ## Stacks
 Pulumi allows us to have multiple stacks. For these project we will have a development and a production stack. Stacks let you deploy clones of the same resources, in different deployment. this is to help during testing, development or any other reason.
 
-<br>
 
 ### Creating a stack
 To create a mew stack you need to run.
@@ -18,7 +19,6 @@ You will be prompted to a add a stack name. stack can be used to clone same reso
 
 You might consider adding a YAML file for each stack. the name convention is `Pulumi.stackname.yaml` where the `stackname` is replaced by an actual stack name. 
 
-<br>
 
 ### Navigating through stacks
 If you are dealing with multiple stack you should understand that stacks work more like git branches. `pulumi up` will create the current selected stack and you can list your stacks by doing 
@@ -32,7 +32,6 @@ pulumi stack select stackname
 ```
 Where `stackname` is the name of the stack. 
 
-<br>
 
 ### Deploying stacks
 Doing `pulumi up` will push the current stack but you can specify what stack you need to deploy by doing
@@ -41,8 +40,6 @@ Doing `pulumi up` will push the current stack but you can specify what stack you
 pulumi up stackname
 ```
 Replacing `stackname` with an actual stack name
-
-<br>
 
 ### Getting stack name and other configurations on the code
 You can actually get the stack specific configurations in the deployment code. let use a little example where we try to use the stack name on the code base.
@@ -59,7 +56,6 @@ const bucket = new aws.s3.Bucket("my-bucket", {
 ``` 
 This will create an S3 bucket named `unique-bucket-name-stack-name` where stack-name is the name of the stack.
 
-<br>
 
 ## Configs
  A config file is created when creating a Pulumi project. this file is called `Pulumi.yaml`. Different config files will also be created either manually or automatically when creating new stacks. The naming convention will be `Pulumi.stackname.yaml`.
@@ -90,8 +86,32 @@ Using require will break the system if the config value is not defined. This man
 
 If you do not want the system to break if value is not available you can use `config.get()` method instead.
 
+## Secret configurations
+You can add secrets on YAML files. Pulumi will add an encrypted file to the config file. This can be added by running `config set` with a `--secret` flag.
 
-<br>
+```sh
+pulumi config set newSecret secret-value-123 --secret
+```
+A value will be added in the YAML file but it will be encrypted
+
+```yaml
+config:
+  aws:region: us-east-1
+  pulumi-example:newSecret:
+    secure: AAABALaD+aWmi9D6AZnaTA+ZYK/qm+VbeBRRxLwvkh4//19yNvDSTWYFnH8LcGak
+```
+
+You can retrieve this secret value by using `pulumi.Config().getSecret()`
+
+```ts
+import * as pulumi from "@pulumi/pulumi"
+
+const config = new pulumi.Config();
+const configSecretValue = config.getSecret("newSecret")
+
+console.log(configSecretValue) // this will output "secret-value-123"
+```
+
 
 ## Destroying everything after experimentation
 After you are done experimenting you can destroy everything by doing

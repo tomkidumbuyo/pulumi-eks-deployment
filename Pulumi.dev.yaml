@@ -1,3 +1,5 @@
 config:
   aws:region: us-east-1
+  pulumi-example:newSecret:
+    secure: AAABALaD+aWmi9D6AZnaTA+ZYK/qm+VbeBRRxLwvkh4//19yNvDSTWYFnH8LcGak
   pulumi-example:s3-bucket-name: unique-s3-bucket-by-thomas-kidumbuyo
