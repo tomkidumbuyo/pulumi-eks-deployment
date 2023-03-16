@@ -3,7 +3,6 @@ to run the stack you can do
 ```sh
 pulumi up
 ```
-<br>
 
 ## Stacks
 Pulumi allows us to have multiple stacks. For these project we will have a development and a production stack. Stacks let you deploy clones of the same resources, in different deployment. this is to help during testing, development or any other reason.
@@ -41,7 +40,7 @@ Doing `pulumi up` will push the current stack but you can specify what stack you
 ```sh
 pulumi up stackname
 ```
-replacing `stackname` with an actual stack name
+Replacing `stackname` with an actual stack name
 
 <br>
 
@@ -60,6 +59,36 @@ const bucket = new aws.s3.Bucket("my-bucket", {
 ``` 
 This will create an S3 bucket named `unique-bucket-name-stack-name` where stack-name is the name of the stack.
 
+<br>
+
+## Configs
+ A config file is created when creating a Pulumi project. this file is called `Pulumi.yaml`. Different config files will also be created either manually or automatically when creating new stacks. The naming convention will be `Pulumi.stackname.yaml`.
+
+You can access the content of these YAML files in the typescript of the project. You can define a variable like so.
+```yaml
+config
+    aws:region: us-west-1
+    project-name:config-value: the-value
+```
+
+or you add the value using a command line
+```sh
+pulumi config set config-value the-value
+```
+
+You can get this value inside the project like so (im assuming we are using typescript in the project)
+```ts
+import * as pulumi from "@pulumi/pulumi"
+
+const config = new pulumi.Config();
+const configValue = config.require("config-value")
+
+console.log(configValue) // this will output "the-value"
+```
+
+Using require will break the system if the config value is not defined. This mandatory to ensure developers don't accidentally define a variable in one stack and forget to initialize it in another.
+
+If you do not want the system to break if value is not available you can use `config.get()` method instead.
 
 
 <br>

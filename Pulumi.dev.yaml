@@ -1,2 +1,3 @@
 config:
   aws:region: us-east-1
+  pulumi-example:s3-bucket-name: unique-s3-bucket-by-thomas-kidumbuyo
